@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapping Party Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body class="home-page">
+
+  <div class="noise-overlay"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">Mapping Party Tracker</span>
+      </a>
+      <nav class="header-nav" id="header-nav">
+        <!-- populated by JS -->
+      </nav>
+    </div>
+  </header>
+
+  <main class="home-main">
+    <section class="hero">
+      <div class="hero-grid-bg"></div>
+      <h1 class="hero-title">
+        <span class="hero-title-line">Claim.</span>
+        <span class="hero-title-line accent">Score.</span>
+        <span class="hero-title-line">Map.</span>
+      </h1>
+      <p class="hero-sub">Collaborative polygon validation for mapping events.</p>
+    </section>
+
+    <section class="projects-section">
+      <div class="projects-header">
+        <h2 class="section-title">Projects</h2>
+        <button class="btn btn-primary" id="new-project-btn" style="display:none">
+          + New Project
+        </button>
+      </div>
+
+      <div id="projects-list" class="projects-grid">
+        <div class="loading-state">Loading projects…</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- New Project Modal -->
+  <div class="modal-backdrop" id="new-project-modal" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Create Project</h3>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field-label">Project Title</label>
+        <input type="text" id="project-title" class="text-input" placeholder="My Mapping Party" maxlength="255">
+
+        <label class="field-label">GeoJSON File <span class="field-hint">(Polygon / MultiPolygon features)</span></label>
+        <div class="file-drop-zone" id="file-drop-zone">
+          <div class="file-drop-icon">📂</div>
+          <div class="file-drop-text">Drop GeoJSON here or <span class="link">browse</span></div>
+          <input type="file" id="geojson-input" accept=".geojson,.json" style="display:none">
+        </div>
+        <div class="file-selected" id="file-selected" hidden></div>
+        <div class="error-msg" id="create-error" hidden></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="create-btn">Create Project</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="/static/js/main.js"></script>
+  <script>
+    MPT.initHomePage();
+  </script>
+</body>
+</html>
