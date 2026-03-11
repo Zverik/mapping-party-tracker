@@ -1,6 +1,6 @@
 [project]
 name = "mapping-party-tracker"
-version = "0.1.1"
+version = "0.1.2"
 description = "Collaborative map polygon claiming and scoring tool"
 requires-python = ">=3.11"
 dependencies = [
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mapping-party-tracker = "main:main"
+mapping-party-tracker = "mpt:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -26,6 +26,7 @@ build-backend = "hatchling.build"
 packages = ["."]
 include = [
     "main.py",
+    "mpt.py",
     "database.py",
     "auth.py",
     "geojson_utils.py",
