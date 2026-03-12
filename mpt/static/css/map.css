@@ -93,6 +93,10 @@ body.map-page { background: #1a1e23; }
   color: #0e0f11;
 }
 
+.score-btn-wide {
+  width: 54px;
+}
+
 .score-btn[data-score="0"] { background: #555; color: var(--text); }
 .score-btn[data-score="1"] { background: #e74c3c; }
 .score-btn[data-score="2"] { background: #e67e22; }

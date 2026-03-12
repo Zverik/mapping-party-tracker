@@ -265,8 +265,9 @@ MPT.initMapPage = (function ($) {
       <div class="score-row">`;
       for (let i = 0; i <= 5; i++) {
         const active = poly.status === i ? 'active' : '';
-        const msg = i == 0 ? 'TODO' : (i == 5 ? '100%' : i);
-        body += `<button class="score-btn ${active}" data-score="${i}">${msg}</button>`;
+        const msg = i == 0 ? 'TODO' : (i == 5 ? '100%' : '' + i);
+        const wide = msg.length > 2 ? 'score-btn-wide' : '';
+        body += `<button class="score-btn ${active} ${wide}" data-score="${i}">${msg}</button>`;
       }
       body += `</div>
       <div class="popup-actions">
