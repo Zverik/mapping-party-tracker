@@ -21,10 +21,10 @@ from fastapi.responses import (
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
-import database as db
-import auth
-from ws_manager import manager, claimed_event, released_event, status_event
-from geojson_utils import (
+from . import auth
+from . import database as db
+from .ws_manager import manager, claimed_event, released_event, status_event
+from .geojson_utils import (
     validate_and_extract_features, feature_to_db_text,
     diff_geojson_upload, GeoJSONError
 )
@@ -401,10 +401,14 @@ async def ws_endpoint(websocket: WebSocket, project_id: int):
 
 # ─── Entry point ──────────────────────────────────────────────────────────────
 
-if __name__ == "__main__":
+def main():
     uvicorn.run(
-        "main:app",
+        "mpt.main:app",
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 8000)),
         reload=os.environ.get("DEBUG", "false").lower() == "true",
     )
+
+
+if __name__ == "__main__":
+    main()

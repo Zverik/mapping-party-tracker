@@ -125,7 +125,8 @@ python3 -c "import secrets; print(secrets.token_hex(32))"
 ## Running
 
 ```bash
-uv run main.py
+uv pip install -e .
+uv run mapping-party-tracker
 ```
 
 The application will:
