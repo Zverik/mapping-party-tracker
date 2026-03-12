@@ -367,9 +367,14 @@ async def api_upload_polygons(
         for poly_id in diff["remove"]:
             cursor.execute("DELETE FROM polygons WHERE id = %s", (poly_id,))
         for feature in diff["add"]:
+            try:
+                score = int((feature.get("properties") or {}).get("score", 0))
+                score = max(0, min(5, score))
+            except (TypeError, ValueError):
+                score = 0
             cursor.execute(
-                "INSERT INTO polygons (project_id, geojson, status) VALUES (%s, %s, 0)",
-                (project_id, feature_to_db_text(feature)),
+                "INSERT INTO polygons (project_id, geojson, status) VALUES (%s, %s, %s)",
+                (project_id, feature_to_db_text(feature), score),
             )
         cursor.close()
 
@@ -379,6 +384,34 @@ async def api_upload_polygons(
         "removed": len(diff["remove"]),
         "kept": len(diff["keep"]),
     })
+
+
+# ─── Export API ───────────────────────────────────────────────────────────────
+
+@app.get("/api/projects/{project_id}/export")
+async def api_export_polygons(project_id: int, request: Request):
+    user_id = auth.require_auth(request)
+    project = db.get_project(project_id)
+    if not project:
+        raise HTTPException(404, "Project not found")
+    if project["owner_id"] != user_id:
+        raise HTTPException(403, "Only the project owner can export polygons")
+
+    rows = db.get_all_polygons_raw(project_id)
+    features = []
+    for row in rows:
+        feature = json.loads(row["geojson"])
+        if not isinstance(feature.get("properties"), dict):
+            feature["properties"] = {}
+        feature["properties"]["score"] = row["status"]
+        features.append(feature)
+
+    collection = {"type": "FeatureCollection", "features": features}
+    filename = project["title"].replace(" ", "_") + "_scores.geojson"
+    return JSONResponse(
+        content=collection,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 # ─── WebSocket ────────────────────────────────────────────────────────────────

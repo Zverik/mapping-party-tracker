@@ -59,6 +59,7 @@ MPT.initEditPage = (function ($) {
     });
 
     $('#upload-btn').on('click', startUpload);
+    $('#export-btn').on('click', exportPolygons);
     $('#cancel-upload-btn').on('click', function () {
       $('#warning-panel').attr('hidden', '');
       _pendingUploadFile = null;
@@ -68,6 +69,11 @@ MPT.initEditPage = (function ($) {
     $('#confirm-upload-btn').on('click', function () {
       doUpload(true);
     });
+  }
+
+  function exportPolygons() {
+    // Trigger download by navigating to the export URL
+    window.location.href = `/api/projects/${_projectId}/export`;
   }
 
   async function saveSettings() {
