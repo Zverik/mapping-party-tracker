@@ -261,11 +261,12 @@ MPT.initMapPage = (function ($) {
 
     } else if (isMine) {
       // Current user's claim
-      body += `<div class="popup-score-label">Score</div>
+      body += `<div class="popup-score-label">Completeness</div>
       <div class="score-row">`;
       for (let i = 0; i <= 5; i++) {
         const active = poly.status === i ? 'active' : '';
-        body += `<button class="score-btn ${active}" data-score="${i}">${i}</button>`;
+        const msg = i == 0 ? 'TODO' : (i == 5 ? '100%' : i);
+        body += `<button class="score-btn ${active}" data-score="${i}">${msg}</button>`;
       }
       body += `</div>
       <div class="popup-actions">
