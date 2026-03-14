@@ -34,6 +34,12 @@ After that, I copy-pasted the result into Claude, and made it fix a couple issue
 
 Given I have asked it to use tech as simple as possible, I can review and merge pull requests. I understand if you don't want to look inside. Also I'd be grateful for security issues you find, since I'm not proficient with web sockets and secure API calls.
 
+## OSM to GeoJSON
+
+I have written (by hand) a script to simplify creating polygons using JOSM. 
+
+See the [tool](tool/) directory.
+
 ## License and Author
 
 Prompts were authored by Ilya Zverev, code is published under the ISC license.
