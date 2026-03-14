@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import sys
 import logging
@@ -82,7 +83,7 @@ class SourceData:
         self.nodes: dict[int, Location] = {}
         self.points: list[Point] = []
 
-    def write_osm(self, fn: str) -> None:
+    def write_osm(self, fn) -> None:
         root = etree.Element('osm', version='0.6')
         for node_id, loc in self.nodes.items():
             etree.SubElement(root, 'node', {
@@ -239,20 +240,29 @@ def read_osm(fn: str) -> SourceData:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Converts ways in OSM file to polygons in GeoJSON.')
-        print('Put tagged nodes in the centers of polygons '
-              'to tag enclosing polygons.')
-        print()
-        print(f'Usage: {sys.argv[0]} <input.osm> [<output.json>]')
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description='Converts ways in OSM file to polygons in GeoJSON. '
+        'Put tagged nodes in the centers of polygons to tag enclosing '
+        'polygons.')
+    parser.add_argument('osm', type=argparse.FileType('r'),
+                        help='Source OSM file')
+    parser.add_argument('-o', '--json', type=argparse.FileType('w'),
+                        help='Output file, stdout by default')
+    parser.add_argument('--dump', type=argparse.FileType('w'),
+                        help='Dump intermediate data into an OSM file')
+    parser.add_argument('-v', action='store_true',
+                        help='Display some technical info')
+    options = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format='%(message)s')
-    data = read_osm(sys.argv[1])
+    logging.basicConfig(
+        level=logging.INFO if not options.v else logging.DEBUG,
+        format='%(message)s')
+    data = read_osm(options.osm)
     data.remove_duplicates()
     data.remove_loose_ends()
     data.link_segments()
-    data.write_osm('test.osm')
+    if options.dump:
+        data.write_osm(options.dump)
 
     features: list[dict] = []
     for polygon in data.find_polygons():
@@ -261,5 +271,5 @@ if __name__ == '__main__':
             'properties': data.build_properties(polygon),
             'geometry': polygon.to_geometry(),
         })
-    w = sys.stdout if len(sys.argv) < 3 else open(sys.argv[2], 'w')
+    w = options.json or sys.stdout
     json.dump({'type': 'FeatureCollection', 'features': features}, w)
