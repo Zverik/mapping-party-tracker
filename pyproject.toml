@@ -1,6 +1,6 @@
 [project]
 name = "mapping-party-tracker"
-version = "0.2.1"
+version = "0.2.2"
 description = "Collaborative map polygon claiming and scoring tool"
 requires-python = ">=3.11"
 dependencies = [

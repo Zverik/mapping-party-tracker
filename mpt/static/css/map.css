@@ -93,9 +93,7 @@ body.map-page { background: #1a1e23; }
   color: #0e0f11;
 }
 
-.score-btn-wide {
-  width: 54px;
-}
+.score-btn-wide { width: 54px; }
 
 .score-btn[data-score="0"] { background: #555; color: var(--text); }
 .score-btn[data-score="1"] { background: #e74c3c; }
@@ -140,6 +138,29 @@ body.map-page { background: #1a1e23; }
 .popup-release-btn:hover {
   background: rgba(255,77,109,0.1);
   border-color: var(--danger);
+}
+
+.popup-josm {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+
+.popup-josm-btn {
+  width: 100%;
+  padding: 0.4rem;
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.popup-josm-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
 }
 
 .popup-score-label {

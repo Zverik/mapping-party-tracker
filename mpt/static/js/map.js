@@ -18,6 +18,7 @@ MPT.initMapPage = (function ($) {
 
   // ─── Module state ─────────────────────────────────────────────────
   let _projectId;
+  let _projectTitle = '';
   let _map;
   let _user = null;
   let _polygons = [];          // [{id, status, claimed_by_id, claimed_by_username, layer}]
@@ -76,6 +77,7 @@ MPT.initMapPage = (function ($) {
   // ─── Sidebar ───────────────────────────────────────────────────────
 
   function renderSidebar(project) {
+    _projectTitle = project.title;
     $('#project-title').text(project.title);
     document.title = project.title + ' — Mapping Party Tracker';
 
@@ -198,6 +200,7 @@ MPT.initMapPage = (function ($) {
 
   function renderHistogram(histogram, total) {
     const $hist = $('#histogram');
+    const BAR_MAX_PX = 52;
     const maxVal = Math.max(...Object.values(histogram), 1);
     const colors = STATUS_COLORS;
 
@@ -206,18 +209,72 @@ MPT.initMapPage = (function ($) {
 
     for (let i = 0; i <= 5; i++) {
       const count = histogram[String(i)] || 0;
-      const px = Math.round((count / maxVal) * 52); // 52 px is the height
+      const px = Math.round((count / maxVal) * BAR_MAX_PX);
       const barPx = count > 0 ? Math.max(px, 3) : 0;
       const bg = i === 0 ? '#444' : colors[i];
       $bars.append(`
         <div class="histo-bar-wrap" title="Score ${i}: ${count}">
           <span class="histo-count">${count > 0 ? count : ''}</span>
-          <div class="histo-bar" style="height:${barPx}%;background:${bg}"></div>
+          <div class="histo-bar" style="height:${barPx}px;background:${bg}"></div>
           <span class="histo-label">${i}</span>
         </div>
       `);
     }
     $hist.append($bars);
+  }
+
+  // ─── GeoJSON → OSM XML ────────────────────────────────────────────
+
+  function geojsonToOsmXml(feature) {
+    const geom = feature.geometry;
+    let ring;
+    if (geom.type === 'Polygon') {
+      ring = geom.coordinates[0];
+    } else if (geom.type === 'MultiPolygon') {
+      ring = geom.coordinates[0][0];
+    } else {
+      return null;
+    }
+    // Drop closing duplicate point if present
+    const coords = (ring[0][0] === ring[ring.length-1][0] &&
+                    ring[0][1] === ring[ring.length-1][1])
+      ? ring.slice(0, -1) : ring.slice();
+
+    const nodes = coords.map(([lon, lat], i) => ({ id: -(i + 1), lat, lon }));
+
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<osm version="0.6">\n';
+    nodes.forEach(n => {
+      xml += `  <node id="${n.id}" lat="${n.lat}" lon="${n.lon}" version="1"/>\n`;
+    });
+    xml += `  <way id="-${nodes.length + 1}" version="1">\n`;
+    nodes.forEach(n => { xml += `    <nd ref="${n.id}"/>\n`; });
+    xml += `    <nd ref="${nodes[0].id}"/>\n`;
+    xml += '  </way>\n</osm>';
+    return xml;
+  }
+
+  function openInJosm(polygonId, projectTitle) {
+    const poly = getPolygon(polygonId);
+    if (!poly) return;
+
+    const fc = poly.layer.toGeoJSON();
+    const feature = fc.type === 'FeatureCollection' ? fc.features[0] : fc;
+    const osmXml = geojsonToOsmXml(feature);
+    if (!osmXml) { alert('Cannot convert this geometry to OSM XML.'); return; }
+
+    const layerName = encodeURIComponent(`${projectTitle} #${polygonId}`);
+    const url = 'http://127.0.0.1:8111/load_data?new_layer=true' +
+                '&layer_name=' + layerName +
+                '&layer_locked=true' +
+                '&download_policy=never' +
+                '&upload_policy=never' +
+                '&data=' + encodeURIComponent(osmXml);
+
+    let $iframe = $('#josm-iframe');
+    if (!$iframe.length) {
+      $iframe = $('<iframe id="josm-iframe" style="display:none"></iframe>').appendTo('body');
+    }
+    $iframe.attr('src', url);
   }
 
   // ─── Popup ────────────────────────────────────────────────────────
@@ -289,11 +346,19 @@ MPT.initMapPage = (function ($) {
       }
     }
 
+    body += `<div class="popup-josm">
+      <button class="popup-josm-btn" data-polygon-id="${poly.id}">Open in JOSM</button>
+    </div>`;
     body += '</div>';
     return body;
   }
 
   function bindPopupButtons(polygonId) {
+    // JOSM button
+    $('.popup-josm-btn').on('click', function () {
+      openInJosm(parseInt($(this).data('polygon-id')), _projectTitle);
+    });
+
     // Score buttons
     $('.score-btn').on('click', function () {
       const score = parseInt($(this).data('score'));
