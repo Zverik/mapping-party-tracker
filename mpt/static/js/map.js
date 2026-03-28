@@ -326,11 +326,15 @@ MPT.initMapPage = (function ($) {
         const wide = msg.length > 2 ? 'score-btn-wide' : '';
         body += `<button class="score-btn ${active} ${wide}" data-score="${i}">${msg}</button>`;
       }
+
+      body += `<div class="popup-josm">
+        <button class="popup-josm-btn" data-polygon-id="${poly.id}">Open in JOSM</button>
+      </div>`;
+
       body += `</div>
       <div class="popup-actions">
         <button class="popup-release-btn">Release Polygon</button>
       </div>`;
-
     } else if (!poly.claimed_by_id) {
       // Unclaimed
       if (!_user || !_user.authenticated) {
@@ -345,10 +349,6 @@ MPT.initMapPage = (function ($) {
         </div>`;
       }
     }
-
-    body += `<div class="popup-josm">
-      <button class="popup-josm-btn" data-polygon-id="${poly.id}">Open in JOSM</button>
-    </div>`;
     body += '</div>';
     return body;
   }
