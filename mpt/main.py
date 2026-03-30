@@ -284,6 +284,9 @@ async def api_set_status(polygon_id: int, request: Request):
     if status is None or not isinstance(status, int) or status < 0 or status > 5:
         raise HTTPException(400, "status must be an integer 0–5")
 
+    if status > 4:
+        status = 4
+
     polygon = db.get_polygon(polygon_id)
     if not polygon:
         raise HTTPException(404, "Polygon not found")
@@ -369,7 +372,7 @@ async def api_upload_polygons(
         for feature in diff["add"]:
             try:
                 score = int((feature.get("properties") or {}).get("score", 0))
-                score = max(0, min(5, score))
+                score = max(0, min(4, score))
             except (TypeError, ValueError):
                 score = 0
             cursor.execute(

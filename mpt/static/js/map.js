@@ -12,7 +12,7 @@ MPT.initMapPage = (function ($) {
     1: '#e74c3c',
     2: '#e67e22',
     3: '#f1c40f',
-    4: '#2ecc71',
+    4: '#27ae60',
     5: '#27ae60',
   };
 
@@ -207,7 +207,7 @@ MPT.initMapPage = (function ($) {
     $hist.html('<div class="histogram-title">Score Distribution</div>');
     const $bars = $('<div class="histogram-bars"></div>');
 
-    for (let i = 0; i <= 5; i++) {
+    for (let i = 0; i <= 4; i++) {
       const count = histogram[String(i)] || 0;
       const px = Math.round((count / maxVal) * BAR_MAX_PX);
       const barPx = count > 0 ? Math.max(px, 3) : 0;
@@ -320,9 +320,9 @@ MPT.initMapPage = (function ($) {
       // Current user's claim
       body += `<div class="popup-score-label">Completeness</div>
       <div class="score-row">`;
-      for (let i = 0; i <= 5; i++) {
+      for (let i = 0; i <= 4; i++) {
         const active = poly.status === i ? 'active' : '';
-        const msg = i == 0 ? 'TODO' : (i == 5 ? '100%' : '' + i);
+        const msg = i == 0 ? 'TODO' : (i == 4 ? '100%' : '' + i);
         const wide = msg.length > 2 ? 'score-btn-wide' : '';
         body += `<button class="score-btn ${active} ${wide}" data-score="${i}">${msg}</button>`;
       }
