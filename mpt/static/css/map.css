@@ -46,7 +46,7 @@ body.map-page { background: #1a1e23; }
 /* ── Popup content ─────────────────────────────────────────────── */
 .popup-inner {
   padding: 1rem 1.25rem;
-  min-width: 200px;
+  min-width: 300px;
 }
 
 .popup-id {

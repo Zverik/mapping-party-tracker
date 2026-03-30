@@ -291,7 +291,7 @@ MPT.initMapPage = (function ($) {
     // Build popup content
     const html = buildPopupHtml(poly);
 
-    const popup = L.popup({ maxWidth: 280, className: 'mpt-popup' })
+    const popup = L.popup({ maxWidth: 310, className: 'mpt-popup' })
       .setLatLng(center)
       .setContent(html)
       .openOn(_map);
@@ -327,12 +327,9 @@ MPT.initMapPage = (function ($) {
         body += `<button class="score-btn ${active} ${wide}" data-score="${i}">${msg}</button>`;
       }
 
-      body += `<div class="popup-josm">
-        <button class="popup-josm-btn" data-polygon-id="${poly.id}">Open in JOSM</button>
-      </div>`;
-
       body += `</div>
       <div class="popup-actions">
+        <button class="popup-josm-btn" data-polygon-id="${poly.id}">Open in JOSM</button>
         <button class="popup-release-btn">Release Polygon</button>
       </div>`;
     } else if (!poly.claimed_by_id) {
