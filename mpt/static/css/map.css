@@ -383,6 +383,35 @@ body.map-page { background: #1a1e23; }
 .legend-line.thick.blue { background: var(--blue); height: 3px; }
 .legend-line.thick.red  { background: var(--danger); height: 3px; }
 
+.legend-lock {
+  width: 18px;
+  text-align: center;
+  color: #f1c40f;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.claim-lock-marker {
+  background: transparent;
+  border: none;
+}
+
+.claim-lock-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 15, 17, 0.75);
+  background: rgba(14, 15, 17, 0.78);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  color: #f1c40f;
+  font-size: 0.8rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
 /* ── User bar / owner bar ──────────────────────────────────────── */
 .user-bar {
   font-size: 0.8rem;

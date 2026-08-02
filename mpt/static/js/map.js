@@ -149,13 +149,16 @@ MPT.initMapPage = (function ($) {
 
     layer.addTo(_layerGroup);
 
-    _polygons.push({
+    const poly = {
       id: polyData.id,
       status: polyData.status,
       claimed_by_id: polyData.claimed_by_id,
       claimed_by_username: polyData.claimed_by_username,
       layer,
-    });
+      lockLayer: null,
+    };
+    _polygons.push(poly);
+    updateClaimLock(poly);
   }
 
   function styleForPolygon(poly) {
@@ -180,6 +183,28 @@ MPT.initMapPage = (function ($) {
     const poly = getPolygon(id);
     if (!poly) return;
     poly.layer.setStyle(styleForPolygon(poly));
+    updateClaimLock(poly);
+  }
+
+  function updateClaimLock(poly) {
+    const isClaimed = !!poly.claimed_by_id;
+    if (isClaimed && !poly.lockLayer) {
+      const center = poly.layer.getBounds().getCenter();
+      poly.lockLayer = L.marker(center, {
+        interactive: false,
+        icon: L.divIcon({
+          className: 'claim-lock-marker',
+          html: '<span class="claim-lock-icon" aria-hidden="true">&#128274;</span>',
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
+        }),
+      }).addTo(_layerGroup);
+      return;
+    }
+    if (!isClaimed && poly.lockLayer) {
+      _layerGroup.removeLayer(poly.lockLayer);
+      poly.lockLayer = null;
+    }
   }
 
   // ─── Stats ────────────────────────────────────────────────────────
