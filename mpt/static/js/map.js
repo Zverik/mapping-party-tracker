@@ -39,9 +39,24 @@ MPT.initMapPage = (function ($) {
       zoomControl: true,
     });
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 19,
+    });
+
+    const imageryLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?blankTile=false', {
+      attribution: 'Tiles © Esri',
+      maxZoom: 19,
+    });
+
+    osmLayer.addTo(_map);
+
+    L.control.layers({
+      'OSM': osmLayer,
+      'ESRI': imageryLayer,
+    }, null, {
+      collapsed: false,
+      position: 'bottomleft',
     }).addTo(_map);
 
     _layerGroup = L.layerGroup().addTo(_map);

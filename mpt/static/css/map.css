@@ -43,6 +43,28 @@ body.map-page { background: #1a1e23; }
 }
 .leaflet-control-zoom a:hover { background: var(--bg-3) !important; }
 
+.leaflet-control-layers {
+  background: var(--bg-2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  color: var(--text) !important;
+  font-size: 0.75rem;
+  box-shadow: var(--shadow) !important;
+}
+
+.leaflet-control-layers label {
+  margin: 0.2rem 0;
+  cursor: pointer;
+}
+
+.leaflet-control-layers input {
+  accent-color: var(--accent);
+}
+
+.leaflet-control-layers-separator {
+  border-top-color: var(--border) !important;
+}
+
 /* ── Popup content ─────────────────────────────────────────────── */
 .popup-inner {
   padding: 1rem 1.25rem;
